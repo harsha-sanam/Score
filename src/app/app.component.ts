@@ -25,22 +25,32 @@ export class AppComponent implements OnInit {
   }
 
   AddScore() {
-    for (var i = 0; i < this.Players.length; i++) {
-      var score = Number((<HTMLInputElement>document.getElementById(this.Players[i])).value);
-      this.Score.Scores[this.Players[i]].push(score);
-      (<HTMLInputElement>document.getElementById(this.Players[i])).value = "";
+    if (this.Players && this.Players.length > 0) {
+      for (var i = 0; i < this.Players.length; i++) {
+        var score = Number((<HTMLInputElement>document.getElementById(this.Players[i])).value);
+        this.Score.Scores[this.Players[i]].push(score);
+        (<HTMLInputElement>document.getElementById(this.Players[i])).value = "";
+      }
+      this.Score.Games = this.Score.Games + 1;
+      this.updateScore();
+      this.updateDistributor();
     }
-    this.Score.Games = this.Score.Games + 1;
-    this.updateScore();
-    this.distributor = (this.distributor + 1) % this.Players.length;
+    else {
+      alert('Add players before adding score');
+    }
+  }
 
-    console.log(this.distributor);
+  updateDistributor() {
+    this.distributor = (this.distributor + 1) % this.Players.length;
   }
   ClearStorage() {
     localStorage.clear();
   }
   AddPlayer() {
-    if (!confirm("All Data will be lost")) {
+    if (!this.newPlayer || this.newPlayer == '' || this.newPlayer == ' ') {
+      return;
+    }
+    if (this.Score.Games && this.Score.Games != 0 && !confirm("All Data will be lost")) {
       return;
     }
     if (this.Players.indexOf(this.newPlayer) >= 0) {
@@ -66,7 +76,16 @@ export class AppComponent implements OnInit {
       return a + b;
     }, 0) : null;
   }
-
+  DeleteScore() {
+    if (this.Score.Games && this.Score.Games > 0) {
+      for (var i = 0; i < this.Players.length; i++) {
+        this.Score.Scores[this.Players[i]].pop();
+      }
+      this.Score.Games--;
+      this.updateScore();
+      this.updateDistributor();
+    }
+  }
   RemovePlayer(player: string) {
     this.Players = this.Players.filter(a => a.toLowerCase() != player.toLowerCase());
     this.updatePlayers();
