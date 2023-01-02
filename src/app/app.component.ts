@@ -83,7 +83,7 @@ export class AppComponent implements OnInit {
       }
       this.Score.Games--;
       this.updateScore();
-      this.updateDistributor();
+      this.distributor = (this.distributor + this.Players.length -1) % this.Players.length;
     }
   }
   RemovePlayer(player: string) {

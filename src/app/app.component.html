@@ -54,6 +54,10 @@
     <div class="col-md-3 red-border">
       <br>
       <br>
+      
+      <h3 class="row">Games : {{Score.Games}}</h3>
+      <h2 class="row">Next : {{Players[distributor]}}</h2><br>
+      <br>
       <h4> Players </h4>
       <b>
         <ul>
@@ -64,8 +68,6 @@
         <input class="form-control" [(ngModel)]="newPlayer" type="text" placeholder="Name">
         <input class="form-control btn-primary my-2" (click)="AddPlayer()" type="button" value="Add">
       </div>
-      <h3 class="row">Games : {{Score.Games}}</h3>
-      <h2 class="row">Next : {{Players[distributor]}}</h2>
     </div>
   </div>
 </div>
