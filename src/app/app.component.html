@@ -54,7 +54,8 @@
     <div class="col-md-3 red-border">
       <br>
       <br>
-      
+
+      <h3 *ngIf="totalpoints > 0" class="row">Total Points : {{totalpoints}}</h3>
       <h3 class="row">Games : {{Score.Games}}</h3>
       <h2 class="row">Next : {{Players[distributor]}}</h2><br>
       <br>
@@ -71,3 +72,47 @@
     </div>
   </div>
 </div>
+
+<ng-template #totalPoints #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Total Points</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="mb-3">
+        <label>How many points are you playing for ?</label>
+        <input class="form-control" maxlength="3" type="number" #gamePoints>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="modal.close(gamePoints.value)">Save</button>
+  </div>
+</ng-template>
+
+
+<ng-template #rejoin let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Rejoin</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <div class="mb-3">
+        <label>Who want to Rejoin ?</label>
+
+        <div class="form-check" *ngFor="let p of rejoinPlayers">
+          <input class="form-check-input" (change)="onChange(p, $event.target.checked)" name="{{ Players[p] }}"
+            type="checkbox" id="{{p}}">
+          <label class="form-check-label" for="{{Players[p]}}">
+            {{Players[p]}}
+          </label>
+        </div>
+
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="rejoinedPlayers.length == 0" type="button" class="btn-primary" (click)="modal.close()" > No Rejoin</button>
+    <button  *ngIf="rejoinedPlayers.length > 0" type="button" class="btn-primary" (click)="modal.close()" > Done</button>
+  </div>
+</ng-template>
