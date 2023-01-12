@@ -1,6 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 
 import { ModalDismissReasons, NgbDatepickerModule, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { MyMonitoringService } from './my-monitoring-service.service';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,7 @@ export class AppComponent implements OnInit {
   @ViewChild('rejoin', { static: true }) rejoinModal: TemplateRef<any>;
 
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal,private myMonitoringService: MyMonitoringService) { }
 
   ngOnInit() {
     this.Players = JSON.parse(localStorage.getItem('players')) ? JSON.parse(localStorage.getItem('players')) : [];
@@ -52,6 +53,8 @@ export class AppComponent implements OnInit {
       this.checkRejoin();
       this.updateScore();
       this.nextDistributor();
+
+      this.myMonitoringService.logEvent("AddScore",JSON.parse(localStorage.getItem('score')));
     }
     else {
       alert('Add players before adding score');
