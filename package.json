@@ -26,7 +26,7 @@
     "@microsoft/applicationinsights-web": "~2.4.4"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.803.8",
+    "@angular-devkit/build-angular": "~15.1.0",
     "@angular/cli": "~8.3.8",
     "@angular/compiler-cli": "~8.2.9",
     "@angular/language-service": "~8.2.9",
