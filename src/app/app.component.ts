@@ -104,7 +104,7 @@ export class AppComponent implements OnInit {
   }
 
   nextDistributor() {
-    this.distributor = (this.distributor + 1) % this.Players.length;
+    this.distributor = (this.Score.Games - 1) % this.Players.length;
   }
 
   ClearStorage() {
