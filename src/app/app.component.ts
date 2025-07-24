@@ -147,6 +147,7 @@ export class AppComponent implements OnInit {
   }
 
   DeleteScore() {
+    if(this.Score.Games == 0){return;}
     let isRejoin = false;
     this.Players.forEach(p => {
       const last = this.Score.Scores[p].pop();
