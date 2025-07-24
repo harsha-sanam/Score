@@ -120,7 +120,7 @@ export class AppComponent implements OnInit {
 
   AddPlayer() {
 
-    if (this.Score && this.Score.Scores && this.Score.Scores[this.newPlayer] != undefined) { this.Players.push(this.newPlayer); this.updatePlayers(); return; }
+    if (this.Score && this.Score.Scores && this.Score.Scores[this.newPlayer] != undefined) { this.Players.push(this.newPlayer); this.updatePlayers(); this.newPlayer=""; return; }
 
     if (!this.newPlayer || this.newPlayer.trim() === '' || (this.Score.Games && !confirm("All Data will be lost"))) return;
 
