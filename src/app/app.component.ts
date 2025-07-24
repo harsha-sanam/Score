@@ -2,6 +2,7 @@
 import { Component, OnInit, TemplateRef, ViewChild, ElementRef } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { MyMonitoringService } from './my-monitoring-service.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-root',
@@ -27,7 +28,7 @@ export class AppComponent implements OnInit {
   @ViewChild('scoreBody', { static: false }) scoreBody: ElementRef;
 
   @ViewChild('scoreTableWrapper', { static: false }) scoreTableWrapper!: ElementRef<HTMLDivElement>;
-@ViewChild('latestScoreRow', { static: false }) latestScoreRow!: ElementRef<HTMLTableRowElement>;
+  @ViewChild('latestScoreRow', { static: false }) latestScoreRow!: ElementRef<HTMLTableRowElement>;
 
   constructor(private modalService: NgbModal, private myMonitoringService: MyMonitoringService) { }
 
@@ -39,6 +40,11 @@ export class AppComponent implements OnInit {
     if (this.totalpoints === 0) this.getTotalpoints();
   }
 
+  dropColumn(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.Players, event.previousIndex, event.currentIndex);
+    this.updatePlayers();
+    this.updateDistributor();
+  }
 
   scrollToBottom() {
     setTimeout(() => {
@@ -60,7 +66,7 @@ export class AppComponent implements OnInit {
       this.Score.Games++;
       this.checkRejoin();
       this.updateScore();
-      this.nextDistributor();
+      this.updateDistributor();
       this.myMonitoringService.logEvent("AddScore", this.Score);
 
     } else {
@@ -103,8 +109,8 @@ export class AppComponent implements OnInit {
     this.rejoinedPlayers = [];
   }
 
-  nextDistributor() {
-    this.distributor = (this.Score.Games - 1) % this.Players.length;
+  updateDistributor() {
+    this.distributor = ((this.Score.Games - 1) + this.Players.length) % this.Players.length;
   }
 
   ClearStorage() {
@@ -113,14 +119,21 @@ export class AppComponent implements OnInit {
   }
 
   AddPlayer() {
+
+    if (this.Score && this.Score.Scores && this.Score.Scores[this.newPlayer] != undefined) { this.Players.push(this.newPlayer); this.updatePlayers(); return; }
+
     if (!this.newPlayer || this.newPlayer.trim() === '' || (this.Score.Games && !confirm("All Data will be lost"))) return;
-    
+
     if (this.Players.includes(this.newPlayer)) return;
 
     this.Players.push(this.newPlayer);
     this.newPlayer = "";
     this.updatePlayers();
     this.InitScore();
+  }
+
+  refreshScore() {
+    if (!this.Score) { this.InitScore(); return; }
   }
 
   InitScore() {
@@ -137,13 +150,14 @@ export class AppComponent implements OnInit {
     let isRejoin = false;
     this.Players.forEach(p => {
       const last = this.Score.Scores[p].pop();
+      (<HTMLInputElement>document.getElementById(p)).value = last;
       if (last < 0) isRejoin = true;
     });
     if (!isRejoin) {
       this.Score.Games--;
-      this.distributor = (this.distributor + this.Players.length - 1) % this.Players.length;
+      this.updateDistributor()
     }
-    
+
     this.updateScore();
   }
 

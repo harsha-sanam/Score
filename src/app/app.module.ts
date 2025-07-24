@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from "@angular/common/http";
-
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import {NgbModalBackdrop } from '@ng-bootstrap/ng-bootstrap/modal/modal-backdrop';
 
 
@@ -14,7 +14,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     AppComponent
   ],
   imports: [
-    BrowserModule,FormsModule,NgbModule,HttpClientModule
+    BrowserModule,FormsModule,NgbModule,HttpClientModule,DragDropModule
   ],
   providers: [],
   bootstrap: [AppComponent]

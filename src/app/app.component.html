@@ -41,27 +41,33 @@
   <div class="row">
     <div class="col-md-9 red-border">
       <div class="table-wrapper" #scoreTableWrapper>
-        <table class="table table-striped">
-          <thead class="table-header sticky-top bg-white">
-            <tr>
-              <th *ngFor="let p of Players">
-                <h5>{{p}} <span><b>({{sum(p)}})</b></span></h5>
-              </th>
-            </tr>
-          </thead>
-          <tbody *ngIf="Players && Players.length > 1" #scoreBody>
-            <tr *ngFor="let s of Score.Scores[this.Players[0]]; let i = index">
-              <td *ngFor="let p of Players">
-                <h6>{{Score.Scores[p][i]}}</h6>
-              </td>
-            </tr>
-            <tr #latestScoreRow>
-              <td *ngFor="let p of Players">
-                <input class="form-control" maxlength="3" type="number" [attr.id]="p">
-              </td>
-            </tr>
-          </tbody>
-        </table>
+       <table class="table table-striped">
+  <thead class="table-header sticky-top bg-white">
+    <tr
+      cdkDropList
+      cdkDropListOrientation="horizontal"
+      (cdkDropListDropped)="dropColumn($event)"
+    >
+      <th *ngFor="let p of Players" cdkDrag>
+        <h5>{{ p }} <span><b>({{ sum(p) }})</b></span></h5>
+      </th>
+    </tr>
+  </thead>
+  <tbody *ngIf="Players && Players.length > 1" #scoreBody>
+    <tr *ngFor="let s of Score.Scores[Players[0]]; let i = index">
+      <td *ngFor="let p of Players">
+        <h6>{{ Score.Scores[p][i] }}</h6>
+      </td>
+    </tr>
+    <tr #latestScoreRow>
+      <td *ngFor="let p of Players">
+        <input class="form-control" maxlength="3" type="number" [attr.id]="p">
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
       </div>
       <div class="text-center my-2">
         <button class="btn btn-primary" (click)="AddScore(); scrollToBottom()">Add Score</button>
