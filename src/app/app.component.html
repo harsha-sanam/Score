@@ -72,7 +72,7 @@
       <div class="text-center my-2">
         <button class="btn btn-primary" (click)="AddScore(); scrollToBottom()">Add Score</button>
       </div>
-      <div class="text-center">
+      <div class="text-center" *ngIf="Score.Games && Score.Games > 0">
         <a class="text-primary" style="cursor: pointer;" (click)="DeleteScore()"><u>Undo Score</u></a>
       </div>
     </div>
