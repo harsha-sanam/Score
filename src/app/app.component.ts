@@ -38,6 +38,7 @@ export class AppComponent implements OnInit {
     this.totalpoints = Number(localStorage.getItem('totalScore')) || 0;
     if (!this.Score.Scores) this.InitScore();
     if (this.totalpoints === 0) this.getTotalpoints();
+    this.updateDistributor()
   }
 
   dropColumn(event: CdkDragDrop<string[]>) {
@@ -110,6 +111,7 @@ export class AppComponent implements OnInit {
   }
 
   updateDistributor() {
+    if(!this.Score){return}
     this.distributor = ((this.Score.Games - 1) + this.Players.length) % this.Players.length;
   }
 
@@ -130,6 +132,7 @@ export class AppComponent implements OnInit {
     this.newPlayer = "";
     this.updatePlayers();
     this.InitScore();
+    this.updateDistributor();
   }
 
   refreshScore() {
@@ -156,9 +159,9 @@ export class AppComponent implements OnInit {
     });
     if (!isRejoin) {
       this.Score.Games--;
-      this.updateDistributor()
     }
 
+      this.updateDistributor()
     this.updateScore();
   }
 
