@@ -145,6 +145,6 @@
 
 <canvas #confettiCanvas class="confetti-canvas"></canvas>
 
-<div class="confetti-message" *ngIf="showName">
+<div class="confetti-message" [style.fontSize]="activePlayers.length == 1 ? '2.5rem' : '1rem'" *ngIf="showName">
   🎉 Congrats, {{winnerName}}! 🎉
 </div>

@@ -32,6 +32,8 @@ export class AppComponent implements OnInit, AfterViewInit {
   showName: boolean = false;
   winnerName: string;
 
+  activePlayers: string[] = [];
+
   @ViewChild("totalPointsModal", { static: true })
   totalPointsModal: TemplateRef<any>;
   @ViewChild("rejoinModal", { static: true }) rejoinModal: TemplateRef<any>;
@@ -49,7 +51,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   constructor(
     private modalService: NgbModal,
     private myMonitoringService: MyMonitoringService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.Players = JSON.parse(localStorage.getItem("players")) || [];
@@ -86,25 +88,34 @@ export class AppComponent implements OnInit, AfterViewInit {
       });
       this.Score.Games++;
 
-      let activePlayers = [];
-
+      this.activePlayers = [];
       for (const player in this.Score.Scores) {
         const totalScore = this.Score.Scores[player].reduce(
           (sum, val) => sum + val,
           0
         );
-        if (totalScore < this.totalpoints) {
-          activePlayers.push(player);
+        if (totalScore < this.totalpoints && this.Players.includes(player)) {
+          this.activePlayers.push(player);
         }
       }
 
-      if (activePlayers.length === 1) {
-        this.winnerName = activePlayers[0];
+      if (this.activePlayers.length === 1) {
+        this.winnerName = this.activePlayers[0];
       }
+      else {
+        this.winnerName = Object.keys(this.Score.Scores).find(player => {
+          const scores = this.Score.Scores[player];
+          return scores[scores.length - 1] === 0;
+        });
 
-      if (!this.winnerName) {
+        for (var i = 0; i < this.Players.length; i++) {
+          this.Score.Scores[this.Players[i]][this.Score.Games - 1] == 0
+          this.winnerName = this.Players[i];
+        }
+
         this.checkRejoin();
       }
+
       this.updateScore();
       this.updateDistributor();
       this.myMonitoringService.logEvent("AddScore", this.Score);
@@ -112,7 +123,13 @@ export class AppComponent implements OnInit, AfterViewInit {
       alert("Add players before adding score");
     }
 
+    this.showName = true;
     this.launchConfetti();
+
+    setTimeout(() => {
+      this.showName = false;
+    }, 3000);
+
   }
 
   checkRejoin() {
@@ -179,20 +196,14 @@ export class AppComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if (
-      !this.newPlayer ||
-      this.newPlayer.trim() === "" ||
-      (this.Score.Games && !confirm("All Data will be lost"))
-    )
-      return;
-
     if (this.Players.includes(this.newPlayer)) return;
 
     this.Players.push(this.newPlayer);
-    this.newPlayer = "";
     this.updatePlayers();
-    this.InitScore();
+    this.updatePlayerScore(this.newPlayer);
     this.updateDistributor();
+    this.newPlayer = "";
+    this.updateScore();
   }
 
   refreshScore() {
@@ -202,6 +213,19 @@ export class AppComponent implements OnInit, AfterViewInit {
     }
   }
 
+  updatePlayerScore(newPlayer: string) {
+    this.refreshScore();
+
+    this.Score.Scores[newPlayer] = Array(this.Score.Games).fill(0);
+
+    if (this.Score.Games > 0) {
+      // Using Object.values with explicit typing
+      const sums: number[] = Object.values(this.Score.Scores).map((arr: number[]) => arr.reduce((acc, val) => acc + val, 0));
+      const maxSum: number = Math.max(...sums);
+      this.Score.Scores[newPlayer][this.Score.Scores[newPlayer].length - 1] = maxSum + 1;
+    }
+
+  }
   InitScore() {
     this.Score = { Scores: {}, Games: 0 };
     this.Players.forEach((p) => (this.Score.Scores[p] = []));
@@ -280,7 +304,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   }
 
   launchConfetti(): void {
-    if (this.winnerName) {
+    if (this.activePlayers.length == 1) {
       this.launchHugeConfetti();
       return;
     }
@@ -296,8 +320,6 @@ export class AppComponent implements OnInit, AfterViewInit {
 
   launchHugeConfetti(): void {
     if (!this.confettiInstance) return;
-
-    this.showName = true;
 
     const duration = 1500;
     const end = Date.now() + duration;
@@ -322,8 +344,5 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     frame();
 
-    setTimeout(() => {
-      this.showName = false;
-    }, 3000);
   }
 }
