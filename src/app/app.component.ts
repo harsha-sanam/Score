@@ -103,14 +103,12 @@ export class AppComponent implements OnInit, AfterViewInit {
         this.winnerName = this.activePlayers[0];
       }
       else {
-        this.winnerName = Object.keys(this.Score.Scores).find(player => {
-          const scores = this.Score.Scores[player];
-          return scores[scores.length - 1] === 0;
-        });
 
         for (var i = 0; i < this.Players.length; i++) {
-          this.Score.Scores[this.Players[i]][this.Score.Games - 1] == 0
+          if(this.Score.Scores[this.Players[i]][this.Score.Games - 1] == 0){
           this.winnerName = this.Players[i];
+          break;
+          }
         }
 
         this.checkRejoin();
@@ -128,6 +126,7 @@ export class AppComponent implements OnInit, AfterViewInit {
 
     setTimeout(() => {
       this.showName = false;
+      this.winnerName = undefined;
     }, 3000);
 
   }
