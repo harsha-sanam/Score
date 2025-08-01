@@ -101,6 +101,9 @@ export class AppComponent implements OnInit, AfterViewInit {
       if (activePlayers.length === 1) {
         this.winnerName = activePlayers[0];
       }
+      else{
+        this.winnerName = undefined;
+      }
 
       if (!this.winnerName) {
         this.checkRejoin();
