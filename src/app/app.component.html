@@ -1,6 +1,5 @@
 <!-- app.component.html -->
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-
 <style>
   .player-list {
     display: flex;
@@ -143,3 +142,9 @@
     </button>
   </div>
 </ng-template>
+
+<canvas #confettiCanvas class="confetti-canvas"></canvas>
+
+<div class="confetti-message" *ngIf="showName">
+  🎉 Congrats, {{winnerName}}! 🎉
+</div>
